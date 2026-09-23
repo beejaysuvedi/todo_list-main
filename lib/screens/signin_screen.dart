@@ -1,6 +1,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list/provider/authentication_provider.dart';
+import 'package:todo_list/screens/signup_screen.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -10,8 +13,11 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController =TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authenticationProvider = Provider.of<AuthenticationProvider>(context);
     return Scaffold(
       backgroundColor: Color(0xffFFFFFF),
       
@@ -27,11 +33,30 @@ class _SigninScreenState extends State<SigninScreen> {
               Text("Sign In", style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),),
           
               SizedBox(height: 20,),
+              TextField(
+                controller: _emailController,
+                
+          
+                decoration: InputDecoration(
+          
+                  filled: true,
+                  fillColor: Colors.grey.withValues(alpha: 0.15),
+                  hintText: "userName",
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(15)
+          
+                  )
+                ),
+              ),
+              SizedBox(height: 20,),
           
               
               TextField(
+                controller: _passwordController,
           
                 decoration: InputDecoration(
+
           
                   filled: true,
                   fillColor: Colors.grey.withValues(alpha: 0.15),
@@ -45,7 +70,41 @@ class _SigninScreenState extends State<SigninScreen> {
               ),
               SizedBox(height: 20,),
               InkWell(
-                 
+                 onTap: () async {
+                  
+                  final email = _emailController.text;
+                  final password = _passwordController.text;
+
+                  if (!email.endsWith("@gmail.com")) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Invalid email"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  final result = await authenticationProvider.signIn(
+                    email,
+                    password,
+                    
+                  );
+                  if (result) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Account Created Successfully"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Failed to Create account"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
                 child: Container(
                   height: 60,
                   width: double.maxFinite,
@@ -60,11 +119,14 @@ class _SigninScreenState extends State<SigninScreen> {
               ),
               SizedBox(height: 15,),
               InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>CreateAccountScreen()));
+                },
                 
                 child: RichText(
                   
                   text:TextSpan(
-                    text: "Forget Password?",
+                    text: "Signup",
                     children: [
                       TextSpan(
                         text: "Reset", style: TextStyle(fontWeight: FontWeight.w600)
