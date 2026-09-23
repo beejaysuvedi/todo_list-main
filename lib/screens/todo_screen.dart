@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_list/provider/authentication_provider.dart';
 import 'package:todo_list/provider/theme_provider.dart';
 import 'package:todo_list/provider/todo_provider.dart';
+import 'package:todo_list/screens/signin_screen.dart';
 
 class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
@@ -13,10 +15,13 @@ class TodoScreen extends StatefulWidget {
 class _TodoScreenState extends State<TodoScreen> {
   TextEditingController _todoController = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     final todoprovider = Provider.of<TodoProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final authenticationProvider = Provider.of<AuthenticationProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -128,6 +133,12 @@ class _TodoScreenState extends State<TodoScreen> {
                   ),
                 );
               },
+            ),
+
+            ElevatedButton(onPressed: (){
+              authenticationProvider.signOut();
+             
+            }, child: Text("LogOut")
             ),
           ],
         ),
